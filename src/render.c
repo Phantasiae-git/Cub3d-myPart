@@ -6,7 +6,7 @@
 /*   By: phanta <phanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 15:21:13 by phanta            #+#    #+#             */
-/*   Updated: 2024/09/05 09:34:41 by phanta           ###   ########.fr       */
+/*   Updated: 2024/09/05 14:44:48 by phanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void updates(void)
 	// 	printf("FPS:%f\n",(1.0 / frameTime));
 	// 	mlx_string_put(data()->mlx, data()->win, 50, 50, 0x000000, ft_itoa((int)1.0/frameTime));
 	// }
-	data()->moveSpeed=frameTime*ROT_MULTIPLIER;
-	data()->rotSpeed=frameTime*MOVE_SPEED_MULTIPLIER;  
+	data()->moveSpeed=frameTime*MOVE_SPEED_MULTIPLIER;
+	data()->rotSpeed=frameTime*ROT_MULTIPLIER;  
 }
 
 int renderLoop(void)

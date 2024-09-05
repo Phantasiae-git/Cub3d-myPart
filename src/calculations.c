@@ -6,7 +6,7 @@
 /*   By: phanta <phanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 11:30:30 by phanta            #+#    #+#             */
-/*   Updated: 2024/09/05 14:14:43 by phanta           ###   ########.fr       */
+/*   Updated: 2024/09/05 15:37:53 by phanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,16 @@ void drawRay(int x, int start, int end, t_img tex, double wallX, int lineHeight)
     int texX;
     texX = (int)(wallX * tex.x);
     //printf("height=%i, lineH=%i\n",tex.y, lineHeight);
-    step = (double)tex.y / (double)lineHeight;
-    texPos= (start - RESH/ 2 + lineHeight / 2) * step;
+    if(fabs(data()->perpWallDist) < 1e-6)
+    {
+        step=0;
+        texPos=(double)tex.y/2.0;
+    }
+    else
+    {
+        step = (double)tex.y / (double)lineHeight;
+        texPos= (start - RESH/ 2 + lineHeight / 2) * step;
+    }
     //printf("texX=%i, step=%f, texPos=%f\n", texX, step, texPos); 
     i=-1;
     while(++i<start)
@@ -91,7 +99,6 @@ void    raycastLoop()
     double deltaDistY;
     double rayDirX;
     double rayDirY;
-	double		perpWallDist;
     
     int side;
     int hit;
@@ -159,14 +166,14 @@ void    raycastLoop()
                 hit = 1;
         }
         if(side == 0)
-            perpWallDist=(sideDistX-deltaDistX);
+            data()->perpWallDist=(sideDistX-deltaDistX);
         else
-            perpWallDist=(sideDistY-deltaDistY);
+            data()->perpWallDist=(sideDistY-deltaDistY);
         int lineHeight;
-        if(fabs(perpWallDist) < 1e-6)
+        if(fabs(data()->perpWallDist) < 1e-6)
             lineHeight=RESH;
         else
-            lineHeight=(int)(RESH/perpWallDist);
+            lineHeight=(int)(RESH/data()->perpWallDist);
         int drawStart=RESH/2-(lineHeight/2);
         if(drawStart<0)
             drawStart=0;
@@ -175,9 +182,9 @@ void    raycastLoop()
             drawEnd=RESH;
         double wallX; 
         if (side == 0) 
-            wallX = data()->posY + perpWallDist * rayDirY;
+            wallX = data()->posY + data()->perpWallDist * rayDirY;
         else
-            wallX = data()->posX + perpWallDist * rayDirX;
+            wallX = data()->posX + data()->perpWallDist * rayDirX;
         wallX -= floor((wallX));
         if(side==0 && rayDirX<0)//E
             tex=data()->textures[0];
@@ -190,7 +197,7 @@ void    raycastLoop()
         //printf("side=%i, raydirX=%f, raydirY=%f\n",side, rayDirX, rayDirY);
         // if (side == 0)
         //     color = (color & 0xfefefe) >> 1;
-        //printf("PerpWallDist=%f, start=%i, end=%i, lineHeight=%i\n\n", perpWallDist, drawStart, drawEnd, lineHeight);
+        //printf("data()->perpWallDist=%f, start=%i, end=%i, lineHeight=%i\n\n", data()->perpWallDist, drawStart, drawEnd, lineHeight);
         drawRay(x, drawStart, drawEnd, tex, wallX, lineHeight);
     }
     mlx_put_image_to_window(data()->mlx, data()->win, data()->current_frame.img, 0, 0);

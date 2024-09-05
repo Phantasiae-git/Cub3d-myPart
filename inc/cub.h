@@ -6,7 +6,7 @@
 /*   By: phanta <phanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 15:21:55 by david             #+#    #+#             */
-/*   Updated: 2024/09/05 11:48:41 by phanta           ###   ########.fr       */
+/*   Updated: 2024/09/05 15:28:19 by phanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,13 @@ typedef struct s_data
 	double		sideDirY;
 	double		planeX;//perpendicular to dir (at least while you're sober)
 	double		planeY;
+	double		perpWallDist;
 	double		time;
 	double		oldTime;
 	double		cameraX;
 	double		moveSpeed;
 	double		rotSpeed;
-	int			rotation;
+	int			rotation; 
 	int			w;
 	int			a;
 	int			s;
