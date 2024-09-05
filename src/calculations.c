@@ -6,7 +6,7 @@
 /*   By: phanta <phanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 11:30:30 by phanta            #+#    #+#             */
-/*   Updated: 2024/09/04 14:47:09 by phanta           ###   ########.fr       */
+/*   Updated: 2024/09/05 14:14:43 by phanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,30 @@ void setplayer(char c, int y, int x)
     }
 }
 
-void drawRay(int x, int start, int end, unsigned long color)
+void drawRay(int x, int start, int end, t_img tex, double wallX, int lineHeight)
 {
     int i;
-
+    unsigned int color; 
+    double step;
+    double texPos;
+    int texY;
+    int texX;
+    texX = (int)(wallX * tex.x);
+    //printf("height=%i, lineH=%i\n",tex.y, lineHeight);
+    step = (double)tex.y / (double)lineHeight;
+    texPos= (start - RESH/ 2 + lineHeight / 2) * step;
+    //printf("texX=%i, step=%f, texPos=%f\n", texX, step, texPos); 
     i=-1;
     while(++i<start)
         my_mlx_pixel_put(&(data()->current_frame), x, i, 0x87CEEB);
     while(start<=end)
+    {
+        texY = (int)texPos % (tex.y - 1);
+        texPos += step;
+        color=get_color(&tex,texX, texY);
+        //printf("x=%i, y=%i, texPos=%f\n", texX, texY, texPos); 
         my_mlx_pixel_put(&(data()->current_frame), x, start++, color);
+    }
     while(++end<RESH)
         my_mlx_pixel_put(&(data()->current_frame), x, end, 0x8ACE00);
 }
@@ -82,7 +97,7 @@ void    raycastLoop()
     int hit;
     double sideDistX;
     double sideDistY;
-    unsigned long color;
+    t_img tex;
     
     while(++x<RESW)
     {
@@ -158,21 +173,25 @@ void    raycastLoop()
         int drawEnd=RESH/2+(lineHeight/2);
         if(drawEnd>RESH)
             drawEnd=RESH;
-        if(side==0 && rayDirX<0)//E
-            color=0xFFFF00;
-        else if(side==0 && rayDirX>0)//W
-            color=0x0000FF;
-        else if(side==1 && rayDirY>0)//S
-            color=0x00FF00;
-        else if(side==1 && rayDirY<0)//N
-            color=0xFF0000;
+        double wallX; 
+        if (side == 0) 
+            wallX = data()->posY + perpWallDist * rayDirY;
         else
-            color=0xFFFFFF;
+            wallX = data()->posX + perpWallDist * rayDirX;
+        wallX -= floor((wallX));
+        if(side==0 && rayDirX<0)//E
+            tex=data()->textures[0];
+        else if(side==0 && rayDirX>0)//W
+            tex=data()->textures[1];
+        else if(side==1 && rayDirY>0)//S
+            tex=data()->textures[2];
+        else if(side==1 && rayDirY<0)//N
+            tex=data()->textures[3];
         //printf("side=%i, raydirX=%f, raydirY=%f\n",side, rayDirX, rayDirY);
-        if (side == 0)
-            color = (color & 0xfefefe) >> 1;
+        // if (side == 0)
+        //     color = (color & 0xfefefe) >> 1;
         //printf("PerpWallDist=%f, start=%i, end=%i, lineHeight=%i\n\n", perpWallDist, drawStart, drawEnd, lineHeight);
-        drawRay(x, drawStart, drawEnd, color);
+        drawRay(x, drawStart, drawEnd, tex, wallX, lineHeight);
     }
     mlx_put_image_to_window(data()->mlx, data()->win, data()->current_frame.img, 0, 0);
     mlx_destroy_image(data()->mlx, data()->current_frame.img);

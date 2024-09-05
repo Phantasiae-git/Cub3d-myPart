@@ -6,7 +6,7 @@
 /*   By: phanta <phanta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 15:21:55 by david             #+#    #+#             */
-/*   Updated: 2024/09/04 17:10:23 by phanta           ###   ########.fr       */
+/*   Updated: 2024/09/05 11:48:41 by phanta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 #define ROT_MULTIPLIER 3.0
 #define MOVE_SPEED_MULTIPLIER 5.0
+
 
 typedef struct s_tt
 {
@@ -59,6 +60,8 @@ typedef struct	s_img {
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
+	int		x;
+	int		y;
 }				t_img;
 
 typedef struct s_data
@@ -86,6 +89,7 @@ typedef struct s_data
 	int			s;
 	int			d;
 	t_img		current_frame;
+	t_img		*textures;
 }				t_data;
 
 //general
@@ -118,6 +122,7 @@ int		read_map(char **file, t_data *game);
 void	allct_map(char **map, t_data *game);
 int		map_parse(t_mapdata *map);
 int		renderLoop(void);
+unsigned int	get_color(t_img *image, int x, int y);
 //raycasting
 void	calculus(char **map);
 void	raycastLoop();
